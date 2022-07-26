@@ -1,13 +1,12 @@
 // HTML DE CADA PRODUTO (COM INSERÇÃO DOS DETALHES)
 function productItem(product) {
+  const price = (Math.round(product.price * 5.5 * 100) / 100).toFixed(2);
   const details = loadDetails(product);
   const item = `<div id="product" class="product" data-name=${
     product.name.replace(/ /g, "\u00a0") || ""
   } data-brand=${product.brand || ""} data-type=${
     product.product_type || ""
-  }  data-price=${product.price || 0} data-rating=${
-    product.rating || 0
-  } tabindex="508">
+  }  data-price=${price || 0} data-rating=${product.rating || 0} tabindex="508">
  <figure class="product-figure">
     <img src=${product.image_link} width="215" height="215" alt=${
     product.name || ""
@@ -18,7 +17,7 @@ function productItem(product) {
     <div class="product-brands"><span class="product-brand background-brand">${
       product.brand || ""
     }</span>
-<span class="product-brand background-price">${product.price || ""}</span></div>
+<span class="product-brand background-price">R$ ${price || 0}</span></div>
   </section>
   ${details}
 </div>`;
@@ -27,6 +26,7 @@ function productItem(product) {
 }
 // HTML DOS DETALHES DE CADA PRODUTO
 function loadDetails(product) {
+  const price = (Math.round(product.price * 5.5 * 100) / 100).toFixed(2);
   let details = `<section class="product-details"><div class="details-row">
         <div>Brand</div>
         <div class="details-bar">
@@ -37,9 +37,7 @@ function loadDetails(product) {
       </div><div class="details-row">
         <div>Price</div>
         <div class="details-bar">
-          <div class="details-bar-bg" style="width= 250">${
-            product.price || 0
-          }</div>
+          <div class="details-bar-bg" style="width= 250">R$ ${price || 0}</div>
         </div>
       </div><div class="details-row">
         <div>Rating</div>
@@ -52,7 +50,7 @@ function loadDetails(product) {
         <div>Category</div>
         <div class="details-bar">
           <div class="details-bar-bg" style="width= 250">${
-            product.category || ""
+            product.category || "\u00a0"
           }</div>
         </div>
       </div><div class="details-row">
@@ -68,7 +66,7 @@ function loadDetails(product) {
 // FETCH PRODUCTS DATA
 async function loadAllProducts() {
   const response = await fetch(
-    "http://makeup-api.herokuapp.com/api/v1/products.json?brand=maybelline"
+    "http://makeup-api.herokuapp.com/api/v1/products.json"
   );
   const products = await response.json();
 
@@ -104,71 +102,6 @@ let inputType = document.getElementById("filter-type");
 let inputOrder = document.getElementById("sort-type");
 
 // EVENTOS NOS INPUTS
-
-/*let timeout;
-function onInputChangeWithDelay() {
-  clearTimeout(timeout);
-  timeout = setTimeout(() => {
-    let inputNameValue = inputName.value;
-    return inputNameValue;
-  }, 500);
-}*/
-
-/* FILTRO POR MARCA
-inputBrand.addEventListener("input", filterByBrand);
-
-async function filterByBrand(e) {
-  document.getElementById("catalog").remove();
-  
-  const products = await loadAllProducts();
-  const inputBrandValue = e.target.value;
-  
-  let inner = "";
-  for (const product of products) {
-    if (inputBrandValue === "todos") {
-      const item = productItem(product);
-      inner += item;
-    } else if (inputBrandValue === product.brand) {
-      const item = productItem(product);
-      inner += item;
-    }
-  }
-  
-  let section = document.createElement("section");
-  section.className = "catalog";
-  section.id = "catalog";
-  section.innerHTML = inner;
-  document.body.appendChild(section);
-}
-
-// FILTRO POR TIPO
-inputType.addEventListener("input", filterByType);
-
-async function filterByType(e) {
-  document.getElementById("catalog").remove();
-  
-  const products = await loadAllProducts();
-  const inputTypeValue = e.target.value;
-  
-  let inner = "";
-  for (const product of products) {
-    if (inputTypeValue === "todos") {
-      const item = productItem(product);
-      inner += item;
-    } else if (inputTypeValue === product.product_type) {
-      const item = productItem(product);
-      inner += item;
-    }
-  }
-  
-  let section = document.createElement("section");
-  section.className = "catalog";
-  section.id = "catalog";
-  section.innerHTML = inner;
-  document.body.appendChild(section);
-}
-*/
-
 inputName.addEventListener("input", searchName);
 
 async function searchName() {
