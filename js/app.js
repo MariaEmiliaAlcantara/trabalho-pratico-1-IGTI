@@ -1,3 +1,4 @@
+// HTML DE CADA PRODUTO (COM INSERÇÃO DOS DETALHES)
 function productItem(product) {
   const details = loadDetails(product);
   const item = `<div class="product" data-name=${product.name} data-brand=${product.brand} data-type=${product.product_type} tabindex="508">
@@ -14,7 +15,7 @@ function productItem(product) {
 
   return item;
 }
-
+// HTML DOS DETALHES DE CADA PRODUTO
 function loadDetails(product) {
   let details = `<section class="product-details"><div class="details-row">
         <div>Brand</div>
@@ -44,16 +45,17 @@ function loadDetails(product) {
       </div></section>`;
   return details;
 }
-
+// FETCH PRODUCTS DATA
 async function loadAllProducts() {
   const response = await fetch(
-    "http://makeup-api.herokuapp.com/api/v1/products.json?product_tags=Natural&product_type=blush"
+    "http://makeup-api.herokuapp.com/api/v1/products.json?brand=covergirl"
   );
   const products = await response.json();
 
   return products;
 }
 
+// FUNÇÃO PARA INSERIR HTML DE CADA PRODUTO DO JSON
 async function buildProductList() {
   const products = await loadAllProducts();
 
@@ -65,6 +67,7 @@ async function buildProductList() {
 
   let section = document.createElement("section");
   section.className = "catalog";
+  section.id = "catalog";
   section.innerHTML = inner;
   document.body.appendChild(section);
 }
@@ -73,10 +76,13 @@ window.onload = async () => {
   await buildProductList();
 };
 
+// INTERAÇÃO COM INPUTS
 let inputName = document.getElementById("filter-name");
 let inputBrand = document.getElementById("filter-brand");
 let inputType = document.getElementById("filter-type");
 let inputOrder = document.getElementById("sort-type");
+
+// EVENTOS NOS INPUTS
 
 inputName.addEventListener("input", onInputChangeWithDelay);
 
@@ -89,15 +95,101 @@ function onInputChangeWithDelay() {
   }, 500);
 }
 
-inputBrand.addEventListener("input", (e) => {
-  let inputBrandValue = e.target.value;
-  return inputBrandValue;
-});
-inputType.addEventListener("input", (e) => {
-  let inputTypeValue = e.target.value;
-  return inputTypeValue;
-});
 inputOrder.addEventListener("input", (e) => {
   let inputOrderValue = e.target.value;
   return inputOrderValue;
 });
+
+/* FILTRO POR MARCA
+inputBrand.addEventListener("input", filterByBrand);
+
+async function filterByBrand(e) {
+  document.getElementById("catalog").remove();
+
+  const products = await loadAllProducts();
+  const inputBrandValue = e.target.value;
+
+  let inner = "";
+  for (const product of products) {
+    if (inputBrandValue === "todos") {
+      const item = productItem(product);
+      inner += item;
+    } else if (inputBrandValue === product.brand) {
+      const item = productItem(product);
+      inner += item;
+    }
+  }
+
+  let section = document.createElement("section");
+  section.className = "catalog";
+  section.id = "catalog";
+  section.innerHTML = inner;
+  document.body.appendChild(section);
+}
+
+// FILTRO POR TIPO
+inputType.addEventListener("input", filterByType);
+
+async function filterByType(e) {
+  document.getElementById("catalog").remove();
+
+  const products = await loadAllProducts();
+  const inputTypeValue = e.target.value;
+
+  let inner = "";
+  for (const product of products) {
+    if (inputTypeValue === "todos") {
+      const item = productItem(product);
+      inner += item;
+    } else if (inputTypeValue === product.product_type) {
+      const item = productItem(product);
+      inner += item;
+    }
+  }
+
+  let section = document.createElement("section");
+  section.className = "catalog";
+  section.id = "catalog";
+  section.innerHTML = inner;
+  document.body.appendChild(section);
+}
+*/
+
+// JUNTAR FILTROS
+
+inputBrand.addEventListener("input", filter);
+inputType.addEventListener("input", filter);
+
+async function filter() {
+  const products = await loadAllProducts();
+  const catalog = document.getElementById("catalog");
+  const inputBrandValue = inputBrand.value;
+  const inputTypeValue = inputType.value;
+
+  let inner = "";
+  let item;
+  for (const product of products) {
+    switch (true) {
+      case inputBrandValue === "todos" && inputTypeValue === "todos":
+        item = productItem(product);
+        inner += item;
+        break;
+      case inputBrandValue === "todos" &&
+        inputTypeValue === product.product_type:
+        item = productItem(product);
+        inner += item;
+        break;
+      case inputBrandValue === product.brande && inputTypeValue === "todos":
+        item = productItem(product);
+        inner += item;
+        break;
+      case inputBrandValue === product.brand &&
+        inputTypeValue === product.product_type:
+        item = productItem(product);
+        inner += item;
+        break;
+    }
+
+    catalog.innerHTML = inner;
+  }
+}
