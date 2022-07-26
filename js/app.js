@@ -68,7 +68,7 @@ function loadDetails(product) {
 // FETCH PRODUCTS DATA
 async function loadAllProducts() {
   const response = await fetch(
-    "http://makeup-api.herokuapp.com/api/v1/products.json"
+    "http://makeup-api.herokuapp.com/api/v1/products.json?brand=maybelline"
   );
   const products = await response.json();
 
@@ -78,6 +78,7 @@ async function loadAllProducts() {
 // FUNÇÃO PARA INSERIR HTML DE CADA PRODUTO DO JSON
 async function buildProductList() {
   const products = await loadAllProducts();
+  products.sort((a, b) => Number(b.rating || 0) - Number(a.rating || 0));
 
   let inner = "";
   for (const product of products) {
@@ -104,31 +105,24 @@ let inputOrder = document.getElementById("sort-type");
 
 // EVENTOS NOS INPUTS
 
-inputName.addEventListener("input", onInputChangeWithDelay);
-
-let timeout;
+/*let timeout;
 function onInputChangeWithDelay() {
   clearTimeout(timeout);
   timeout = setTimeout(() => {
     let inputNameValue = inputName.value;
     return inputNameValue;
   }, 500);
-}
-
-/*inputOrder.addEventListener("input", (e) => {
-  let inputOrderValue = e.target.value;
-  return inputOrderValue;
-}); */
+}*/
 
 /* FILTRO POR MARCA
 inputBrand.addEventListener("input", filterByBrand);
 
 async function filterByBrand(e) {
   document.getElementById("catalog").remove();
-
+  
   const products = await loadAllProducts();
   const inputBrandValue = e.target.value;
-
+  
   let inner = "";
   for (const product of products) {
     if (inputBrandValue === "todos") {
@@ -139,7 +133,7 @@ async function filterByBrand(e) {
       inner += item;
     }
   }
-
+  
   let section = document.createElement("section");
   section.className = "catalog";
   section.id = "catalog";
@@ -152,10 +146,10 @@ inputType.addEventListener("input", filterByType);
 
 async function filterByType(e) {
   document.getElementById("catalog").remove();
-
+  
   const products = await loadAllProducts();
   const inputTypeValue = e.target.value;
-
+  
   let inner = "";
   for (const product of products) {
     if (inputTypeValue === "todos") {
@@ -166,7 +160,7 @@ async function filterByType(e) {
       inner += item;
     }
   }
-
+  
   let section = document.createElement("section");
   section.className = "catalog";
   section.id = "catalog";
@@ -175,8 +169,26 @@ async function filterByType(e) {
 }
 */
 
-// JUNTAR FILTROS
+inputName.addEventListener("input", searchName);
 
+async function searchName() {
+  const products = await loadAllProducts();
+  const catalog = document.getElementById("catalog");
+  const inputNameValue = inputName.value;
+  console.log(typeof inputNameValue);
+
+  let inner = "";
+  let item;
+  for (const product of products) {
+    if (product.name.toUpperCase().includes(inputNameValue.toUpperCase())) {
+      item = productItem(product);
+      inner += item;
+    }
+  }
+  catalog.innerHTML = inner;
+}
+
+// JUNTAR FILTROS
 inputBrand.addEventListener("input", filter);
 inputType.addEventListener("input", filter);
 
@@ -199,7 +211,7 @@ async function filter() {
         item = productItem(product);
         inner += item;
         break;
-      case inputBrandValue === product.brande && inputTypeValue === "todos":
+      case inputBrandValue === product.brand && inputTypeValue === "todos":
         item = productItem(product);
         inner += item;
         break;
@@ -209,7 +221,6 @@ async function filter() {
         inner += item;
         break;
     }
-
     catalog.innerHTML = inner;
   }
 }
