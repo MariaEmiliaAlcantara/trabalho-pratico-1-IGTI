@@ -7,6 +7,10 @@
   <meta http-equiv="X-UA-Compatible" content="ie=edge" />
   <title>Make Up Catalog</title>
   <link rel="stylesheet" href="css/style.css" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap" rel="stylesheet">
 </head>
 
 <body>
@@ -19,7 +23,7 @@
         <label for="filter-name">Nome:</label>
         <input type="text" id="filter-name" />
       </div>
-      <div class="form-control">
+      <div class="form-control" id="form-control-brand">
         <label for="filter-brand">Marca:</label>
         <select id="filter-brand">
           <option value="todos">Todos</option>
@@ -101,7 +105,7 @@
       <div class="form-control">
         <label for="sort"></label>
         <select id="sort-type">
-          <option value="bestRating">Melhor Avaliados</option>
+          <option value="bestRating">Melhores Avaliados</option>
           <option value="lowerPrice">Menores Preços</option>
           <option value="greaterPrice">Maiores Preços</option>
           <option value="aToZ">A-Z</option>
